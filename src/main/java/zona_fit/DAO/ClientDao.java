@@ -78,8 +78,30 @@ public class ClientDao implements IClientDao {
 
     @Override
     public boolean addClient(Client client) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addClient'");
+        PreparedStatement ps;
+        Connection con = getConnection();
+        String sql = "INSERT INTO client (name_client, last_name_client, email_client, membership_number, date_registered) "
+            + " VALUES(?, ?, ?, ?, ?)";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, client.getName_client());
+            ps.setString(2, client.getLast_name_client());
+            ps.setString(3, client.getEmail_client());
+            ps.setInt(4, client.getMembership_number());
+            ps.setTimestamp(5, new java.sql.Timestamp(client.getDate_registered().getTime()));
+            ps.execute();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error adding client: " + e.getMessage() );
+        }
+        finally{
+            try{
+                con.close();
+            }catch(Exception e){
+                System.out.println("Error to close connection: " + e.getMessage());
+            }
+        }
+        return false;
     }
 
     @Override
@@ -95,17 +117,26 @@ public class ClientDao implements IClientDao {
     }
 
     public static void main(String[] args) {
-        /* System.out.println("*** Listing Clients ***");
+        /* 
         IClientDao clientDao = new ClientDao();
-        var clients = clientDao.listClients();
-        clients.forEach(System.out::println); */
-        IClientDao clientDao = new ClientDao();
-        var client1 = new Client(1);
+        var client1 = new Client(2);
         System.out.println("Client before the search: " + client1);
         var founded = clientDao.searchClientById(client1);
         if(founded)
             System.out.println("Client founded: "+ client1);
         else
-            System.out.println("The client was not founded: " + client1);    
+            System.out.println("The client was not founded: " + client1);   */  
+        IClientDao clientDao = new ClientDao();
+        var newClient = new Client("Jacob", "Screw", "jscrew@email.com", 10003);
+        var added = clientDao.addClient(newClient);
+        if(added)
+            System.out.println("Client added: " + newClient);
+        else
+            System.out.println("Client was not added: " + newClient);
+        
+        //Listing clients
+        System.out.println("*** Listing Clients ***");
+        var clients = clientDao.listClients();
+        clients.forEach(System.out::println);
     }
 }

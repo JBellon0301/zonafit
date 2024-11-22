@@ -20,7 +20,9 @@ public class Client {
     public Client(String name_client, String last_name_client, String email_client, int membership_number){
         this.name_client = name_client;
         this.last_name_client = last_name_client;
+        this.email_client = email_client;
         this.membership_number = membership_number;
+        this.date_registered = new Date();
     }
 
     public Client(int id_client, String name_client, String last_name_client, String email_client, int membership_number,
@@ -85,11 +87,11 @@ public class Client {
     
     StringBuilder sb = new StringBuilder();
     sb.append("Client{");
-    sb.append("id_client= ").append(id_client);
+    sb.append(" id_client= ").append(id_client);
     sb.append(", name_client= '").append(name_client).append('\'');
     sb.append(", last_name_client= '").append(last_name_client).append('\'');
-    sb.append("email_client= ").append(email_client);
-    sb.append(", membership_number= ").append(membership_number);
+    sb.append(", email_client= ").append(email_client).append('\'');
+    sb.append(", membership_number= ").append(membership_number).append('\'');
     sb.append(", date_registered= '").append(formattedDate).append('\'');
     sb.append('}');
     return sb.toString();
