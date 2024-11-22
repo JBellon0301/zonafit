@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import zona_fit.connection.ConnectionDataBase;
+import static zona_fit.connection.ConnectionDataBase.getConnection;
 import zona_fit.domain.Client;
 
 public class ClientDao implements IClientDao {
-
     @Override
     public List<Client> listClients() {
         List<Client> clients = new ArrayList<>();
@@ -43,12 +43,38 @@ public class ClientDao implements IClientDao {
         }
         return clients;
     }
-
+    
     @Override
-    public boolean searchClienteById(Client client) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchClienteById'");
+    public boolean searchClientById(Client client) {
+        PreparedStatement ps;
+        ResultSet rs;
+        var con = getConnection();
+        var sql = "SELECT * FROM client WHERE id_client = ?";
+        try{
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, client.getId_client());
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                client.setName_client(rs.getString("name_client"));
+                client.setLast_name_client(rs.getString("last_name_client"));
+                client.setEmail_client(rs.getString("email_client"));
+                client.setMembership_number(rs.getInt("membership_number"));
+                client.setDate_registered(rs.getTimestamp("date_registered"));
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println("Error searching client by ID: " + e.getMessage());
+        }
+        finally {
+            try {
+                con.close();
+            } catch (Exception e) {
+                System.err.println("Error to close connection: " + e.getMessage());
+            }
+        }
+        return false;
     }
+    
 
     @Override
     public boolean addClient(Client client) {
@@ -69,11 +95,17 @@ public class ClientDao implements IClientDao {
     }
 
     public static void main(String[] args) {
-        System.err.println("*** Listing Clients ***");
+        /* System.out.println("*** Listing Clients ***");
         IClientDao clientDao = new ClientDao();
         var clients = clientDao.listClients();
-        clients.forEach(System.out::println);
-        
+        clients.forEach(System.out::println); */
+        IClientDao clientDao = new ClientDao();
+        var client1 = new Client(1);
+        System.out.println("Client before the search: " + client1);
+        var founded = clientDao.searchClientById(client1);
+        if(founded)
+            System.out.println("Client founded: "+ client1);
+        else
+            System.out.println("The client was not founded: " + client1);    
     }
-
 }

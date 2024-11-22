@@ -13,7 +13,7 @@ public class Client {
 
     public Client(){}
 
-    public Client(int id){
+    public Client(int id_client){
         this.id_client= id_client;
     }
 
@@ -143,12 +143,4 @@ public class Client {
             return false;
         return true;
     }
-
-    
-
-    
-    
-    
-    
-
 }
