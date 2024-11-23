@@ -106,19 +106,60 @@ public class ClientDao implements IClientDao {
 
     @Override
     public boolean modifyClient(Client client) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'modifyClient'");
+            PreparedStatement ps;
+            Connection con = getConnection();
+            var sql = "UPDATE client SET name_client=?, last_name_client=?, email_client=?, membership_number=? " + "WHERE id_client =?";
+            try{
+                ps = con.prepareStatement(sql);
+                ps.setString(1, client.getName_client());
+                ps.setString(2, client.getLast_name_client());
+                ps.setString(3, client.getEmail_client());
+                ps.setInt(4, client.getMembership_number());
+                ps.setInt(5, client.getId_client());
+                ps.execute();
+                return true;
+
+            }catch(Exception e){
+                System.out.println("Error to modify the client: " + e.getMessage());
+            }
+            finally{
+                try {
+                    con.close();
+                } catch (Exception e) {
+                    System.out.println("Error to close connection: " + e.getMessage());
+                }
+            }
+            return false;
+
     }
 
     @Override
     public boolean removeClient(Client client) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeClient'");
+            PreparedStatement ps;
+            Connection con = getConnection();
+            String sql = "DELETE FROM client WHERE id_client = ? ";
+            try {
+                ps = con.prepareStatement(sql);
+                ps.setInt(1, client.getId_client());
+                ps.execute();
+                return true;
+
+            } catch (Exception e) {
+                System.out.println("Error to remove client: " + e.getMessage());
+            }
+            finally{
+                try{
+                    con.close();
+                }catch (Exception e){
+                    System.out.println("Error to close connection" + e.getMessage());
+                }
+            }
+            return false;
     }
 
     public static void main(String[] args) {
-        /* 
         IClientDao clientDao = new ClientDao();
+        /* search client by Id 
         var client1 = new Client(2);
         System.out.println("Client before the search: " + client1);
         var founded = clientDao.searchClientById(client1);
@@ -126,14 +167,32 @@ public class ClientDao implements IClientDao {
             System.out.println("Client founded: "+ client1);
         else
             System.out.println("The client was not founded: " + client1);   */  
-        IClientDao clientDao = new ClientDao();
-        var newClient = new Client("Jacob", "Screw", "jscrew@email.com", 10003);
+        
+        //Add client
+        /* var newClient = new Client("Cleare", "Screwish", "cscrewish@email.com", 10004);
         var added = clientDao.addClient(newClient);
         if(added)
             System.out.println("Client added: " + newClient);
         else
-            System.out.println("Client was not added: " + newClient);
-        
+            System.out.println("Client was not added: " + newClient); 
+         */
+        /* Modify client 
+         var modifyClient = new Client(1, "Jeremias", "Belmont", "jbelmont@email.com", 10001, null);
+        var modified = clientDao.modifyClient(modifyClient);
+        if(modified)
+            System.out.println("Client modified: " + modifyClient);
+        else
+            System.out.println("Client was not modified: " + modifyClient); */
+
+        //Remove client
+        /* IClientDao clientDao = new ClientDao();
+        var clientRemoved = new Client(3);
+        var removed = clientDao.removeClient(clientRemoved);
+        if(removed)
+            System.out.println("Cliente removed: " + clientRemoved);
+        else
+            System.out.println("Client was not removed" + clientRemoved);   */  
+
         //Listing clients
         System.out.println("*** Listing Clients ***");
         var clients = clientDao.listClients();
