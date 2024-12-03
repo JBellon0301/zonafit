@@ -77,61 +77,57 @@ public class ClientDao implements IClientDao {
     
 
     @Override
-    public boolean addClient(Client client) {
+public boolean addClient(Client client) {
+    PreparedStatement ps;
+    Connection con = getConnection();
+    String sql = "INSERT INTO client (name_client, last_name_client, email_client, date_registered) "
+               + "VALUES (?, ?, ?, ?)";
+    try {
+        ps = con.prepareStatement(sql);
+        ps.setString(1, client.getName_client());
+        ps.setString(2, client.getLast_name_client());
+        ps.setString(3, client.getEmail_client());
+        ps.setTimestamp(4, new java.sql.Timestamp(client.getDate_registered().getTime()));
+        ps.execute();
+        return true;
+    } catch (Exception e) {
+        System.out.println("Error adding client: " + e.getMessage());
+    } finally {
+        try {
+            con.close();
+        } catch (Exception e) {
+            System.out.println("Error closing connection: " + e.getMessage());
+        }
+    }
+    return false;
+}
+
+
+    public boolean modifyClient(Client client) {
         PreparedStatement ps;
         Connection con = getConnection();
-        String sql = "INSERT INTO client (name_client, last_name_client, email_client, membership_number, date_registered) "
-            + " VALUES(?, ?, ?, ?, ?)";
+        String sql = "UPDATE client SET name_client = ?, last_name_client = ?, email_client = ? WHERE id_client = ?";
         try {
             ps = con.prepareStatement(sql);
             ps.setString(1, client.getName_client());
             ps.setString(2, client.getLast_name_client());
             ps.setString(3, client.getEmail_client());
-            ps.setInt(4, client.getMembership_number());
-            ps.setTimestamp(5, new java.sql.Timestamp(client.getDate_registered().getTime()));
-            ps.execute();
-            return true;
+            ps.setInt(4, client.getId_client());
+            
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;  // Devuelve true si se actualizó al menos un registro
         } catch (Exception e) {
-            System.out.println("Error adding client: " + e.getMessage() );
-        }
-        finally{
-            try{
+            System.out.println("Error modifying client: " + e.getMessage());
+        } finally {
+            try {
                 con.close();
-            }catch(Exception e){
-                System.out.println("Error to close connection: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error closing connection: " + e.getMessage());
             }
         }
         return false;
     }
 
-    @Override
-    public boolean modifyClient(Client client) {
-            PreparedStatement ps;
-            Connection con = getConnection();
-            var sql = "UPDATE client SET name_client=?, last_name_client=?, email_client=?, membership_number=? " + "WHERE id_client =?";
-            try{
-                ps = con.prepareStatement(sql);
-                ps.setString(1, client.getName_client());
-                ps.setString(2, client.getLast_name_client());
-                ps.setString(3, client.getEmail_client());
-                ps.setInt(4, client.getMembership_number());
-                ps.setInt(5, client.getId_client());
-                ps.execute();
-                return true;
-
-            }catch(Exception e){
-                System.out.println("Error to modify the client: " + e.getMessage());
-            }
-            finally{
-                try {
-                    con.close();
-                } catch (Exception e) {
-                    System.out.println("Error to close connection: " + e.getMessage());
-                }
-            }
-            return false;
-
-    }
 
     @Override
     public boolean removeClient(Client client) {

@@ -17,20 +17,31 @@ public class Client {
         this.id_client= id_client;
     }
 
-    public Client(String name_client, String last_name_client, String email_client, int membership_number){
+    public Client(String name_client, String last_name_client, String email_client) {
+        this.name_client = name_client;
+        this.last_name_client = last_name_client;
+        this.email_client = email_client;
+        this.date_registered = new Date();  
+    }
+
+    public Client(int id_client, String name_client, String last_name_client, String email_client) {
+        this.id_client = id_client;
+        this.name_client = name_client;
+        this.last_name_client = last_name_client;
+        this.email_client = email_client;
+        
+    }
+    
+    
+    public Client(int id_client, String name_client, String last_name_client, String email_client, int membership_number, Date date_registered) {
+        this.id_client = id_client;
         this.name_client = name_client;
         this.last_name_client = last_name_client;
         this.email_client = email_client;
         this.membership_number = membership_number;
-        this.date_registered = new Date();
-    }
-
-    public Client(int id_client, String name_client, String last_name_client, String email_client, int membership_number,
-            Date date_registered) {
-        this(name_client, last_name_client, email_client, membership_number);
-        this.id_client = id_client;
         this.date_registered = date_registered;
     }
+
 
     public int getId_client() {
         return id_client;

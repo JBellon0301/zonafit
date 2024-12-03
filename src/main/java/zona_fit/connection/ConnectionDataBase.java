@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 public class ConnectionDataBase {
     public static Connection getConnection(){
         Connection conexion = null;
-        var baseDatos = "zona_fit_db";
+        var baseDatos = "fit_zone_db";
         var url = "jdbc:mysql://localhost:3306/" + baseDatos;
         var usuario = "root";
         var password = "Password1811!";
